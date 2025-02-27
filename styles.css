@@ -46,6 +46,10 @@ input, select, button {
     border-radius: 5px;
 }
 
+input {
+    font-size: 16px;
+}
+
 button {
     background-color: #007bff;
     color: white;
@@ -214,3 +218,7 @@ select:focus {
     color: #000000; /* Vermelho escuro */
     border: 2px solid #ff293e;
 }
+
+
+
+
