@@ -175,7 +175,7 @@ select:focus {
     appearance: none;
     width: 16px;
     height: 16px;
-    border: 1px solid #007bff;
+    border: 1px solid #000000;
     border-radius: 3px;
     background-color: white;
     cursor: pointer;
@@ -200,4 +200,17 @@ select:focus {
     display: block;
     text-align: center;
     line-height: 14px;
+}
+
+
+.horario-disponivel {
+    background: #d4edda; /* Verde claro */
+    color: #000000; /* Verde escuro */
+    border: 2px solid #2aff5c;
+}
+
+.horario-indisponivel {
+    background: #f8d7da; /* Vermelho claro */
+    color: #000000; /* Vermelho escuro */
+    border: 2px solid #ff293e;
 }

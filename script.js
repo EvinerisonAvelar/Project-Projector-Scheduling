@@ -52,38 +52,33 @@ document.addEventListener("DOMContentLoaded", async () => {
     async function atualizarHorariosDisponiveis() {
         const projetorSelecionado = projetorSelect.value;
         horariosContainer.innerHTML = "";
-
+    
         const horarios = ["1º", "2º", "3º", "4º", "5º", "6º", "7º", "8º", "9º"];
         const agendamentos = await carregarAgendamentos();
         const dataFormatada = obterProximoDiaUtil();
-
+    
         const horariosOcupados = agendamentos
             .filter(a => a.projetor === projetorSelecionado && a.data === dataFormatada)
             .map(a => a.horario);
-        
-        horariosContainer.style.display = "flex";
-        horariosContainer.style.flexWrap = "nowrap";
-        horariosContainer.style.justifyContent = "center";
-        horariosContainer.style.alignItems = "center";
-        horariosContainer.style.width = "100%";
-        horariosContainer.style.overflow = "hidden";
-        horariosContainer.style.padding = "10px";
-        horariosContainer.style.whiteSpace = "nowrap";
-        
+    
         horarios.forEach(horario => {
             const label = document.createElement("label");
             label.style.display = "inline-flex";
             label.style.alignItems = "center";
             label.style.marginRight = "10px";
-            
+    
             const checkbox = document.createElement("input");
             checkbox.type = "checkbox";
             checkbox.value = horario;
             checkbox.name = "horario";
+    
             if (horariosOcupados.includes(horario)) {
                 checkbox.disabled = true;
+                label.classList.add("horario-indisponivel"); // Adiciona classe vermelha
+            } else {
+                label.classList.add("horario-disponivel"); // Adiciona classe verde
             }
-            
+    
             label.appendChild(checkbox);
             label.appendChild(document.createTextNode(horario));
             horariosContainer.appendChild(label);
@@ -147,3 +142,4 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
     setInterval(limparAgendamentosDiarios, 60000);
 });
+
