@@ -146,27 +146,58 @@ select:focus {
 }
 
 
+#horarios-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+    padding: 10px;
+    width: 100%;
+}
+
 #horarios-container label {
     display: flex;
     align-items: center;
+    justify-content: center;
     gap: 5px;
     background: #e9ecef;
     padding: 8px 12px;
     border-radius: 5px;
-    font-size: 16px; /* Aumentar fonte para melhor legibilidade */
-    cursor: pointer;
-    min-width: 50px;
-}
-
-/* Ajuste para alinhamento correto da checkbox dentro da label */
-#horarios-container label input {
-    transform: scale(1.2); /* Ajusta o tamanho da checkbox */
-    margin-right: 5px;
+    white-space: nowrap;
+    min-width: 50px; /* Define um tamanho mínimo para evitar que os horários fiquem desorganizados */
+    text-align: center;
     position: relative;
-    top: 1px;
+    overflow: hidden;
 }
 
-/* Evitar zoom automático do iOS ao clicar */
-input, select, button {
-    font-size: 16px;
+/* Ajuste para centralizar checkbox dentro da label */
+#horarios-container label input[type="checkbox"] {
+    appearance: none;
+    width: 16px;
+    height: 16px;
+    border: 1px solid #007bff;
+    border-radius: 3px;
+    background-color: white;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-right: 5px;
+}
+
+/* Adiciona um check customizado */
+#horarios-container label input[type="checkbox"]:checked {
+    background-color: #007bff;
+    border: 1px solid #0056b3;
+    position: relative;
+}
+
+#horarios-container label input[type="checkbox"]:checked::after {
+    content: '✔';
+    color: white;
+    font-size: 12px;
+    font-weight: bold;
+    display: block;
+    text-align: center;
+    line-height: 14px;
 }
