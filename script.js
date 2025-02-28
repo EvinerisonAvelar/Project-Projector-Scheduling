@@ -29,14 +29,19 @@ document.addEventListener("DOMContentLoaded", async () => {
         let hoje = new Date();
         let diaAgendamento = new Date(hoje);
         
-        if (hoje.getHours() >= 17) {
+        // Verifica se já houve a limpeza (ou seja, se passou das 17h) **MAS** mantém o mesmo dia se ainda for possível agendar
+        const ultimaLimpeza = localStorage.getItem("ultimaLimpeza");
+        const dataHojeFormatada = hoje.toISOString().split('T')[0];
+    
+        if (hoje.getHours() >= 17 && ultimaLimpeza === dataHojeFormatada) {
             diaAgendamento.setDate(hoje.getDate() + 1);
         }
-        
+    
+        // Se for sábado (6) ou domingo (0), avança para segunda-feira
         while (diaAgendamento.getDay() === 6 || diaAgendamento.getDay() === 0) {
             diaAgendamento.setDate(diaAgendamento.getDate() + 1);
         }
-        
+    
         return diaAgendamento.toISOString().split('T')[0];
     }
 
