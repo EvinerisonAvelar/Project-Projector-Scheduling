@@ -130,26 +130,27 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
     atualizarListaAgendamentos();
 
-    let limpezaFeitaHoje = false;
 
     async function limparAgendamentosDiarios() {
         const agora = new Date();
-        if (agora.getHours() >= 17 && !limpezaFeitaHoje) {  // Só executa uma vez ao dia
+        const dataAtual = agora.toISOString().split('T')[0]; // Obtém a data no formato "YYYY-MM-DD"
+        const ultimaLimpeza = localStorage.getItem("ultimaLimpeza");
+    
+        if (agora.getHours() === 17 && ultimaLimpeza !== dataAtual) {  
+            // Se ainda não foi feita hoje, apaga os agendamentos
             const querySnapshot = await getDocs(collection(db, "agendamentos"));
             querySnapshot.forEach(async (docSnap) => {
                 await deleteDoc(doc(db, "agendamentos", docSnap.id));
             });
-            atualizarListaAgendamentos();
-            limpezaFeitaHoje = true;  // Impede que a função rode várias vezes no mesmo dia
-        }
     
-        if (agora.getHours() < 17) { 
-            limpezaFeitaHoje = false;  // Reseta a variável no dia seguinte
+            atualizarListaAgendamentos();
+            localStorage.setItem("ultimaLimpeza", dataAtual); // Registra a última limpeza
         }
     }
     
     // Verifica a cada 1 minuto
     setInterval(limparAgendamentosDiarios, 60000);
+    
     
 });
 
