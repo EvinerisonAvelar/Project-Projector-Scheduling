@@ -1,7 +1,9 @@
+// script.js
+
 // Importar e configurar Firebase
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.3.1/firebase-app.js";
 import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.3.1/firebase-analytics.js";
-import { getFirestore, collection, addDoc, getDocs, query, where, deleteDoc, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/11.3.1/firebase-firestore.js";
+import { getFirestore, collection, addDoc, getDocs, query, where, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/11.3.1/firebase-firestore.js";
 
 const firebaseConfig = {
     apiKey: "AIzaSyAuz7p8hwBYbYwe-W2xw6s1m80ToA93Lx4",
@@ -26,12 +28,20 @@ document.addEventListener("DOMContentLoaded", async () => {
     function obterProximoDiaUtil() {
         let hoje = new Date();
         let diaAgendamento = new Date(hoje);
-
+        
+        // Verifica se já houve a limpeza (ou seja, se passou das 17h) **MAS** mantém o mesmo dia se ainda for possível agendar
+        const ultimaLimpeza = localStorage.getItem("ultimaLimpeza");
+        const dataHojeFormatada = hoje.toISOString().split('T')[0];
+    
+        if (hoje.getHours() >= 17 && ultimaLimpeza === dataHojeFormatada) {
+            diaAgendamento.setDate(hoje.getDate() + 1);
+        }
+    
         // Se for sábado (6) ou domingo (0), avança para segunda-feira
         while (diaAgendamento.getDay() === 6 || diaAgendamento.getDay() === 0) {
             diaAgendamento.setDate(diaAgendamento.getDate() + 1);
         }
-
+    
         return diaAgendamento.toISOString().split('T')[0];
     }
 
@@ -42,6 +52,42 @@ document.addEventListener("DOMContentLoaded", async () => {
             agendamentos.push({ id: doc.id, ...doc.data() });
         });
         return agendamentos;
+    }
+
+    async function atualizarHorariosDisponiveis() {
+        const projetorSelecionado = projetorSelect.value;
+        horariosContainer.innerHTML = "";
+    
+        const horarios = ["1º", "2º", "3º", "4º", "5º", "6º", "7º", "8º", "9º"];
+        const agendamentos = await carregarAgendamentos();
+        const dataFormatada = obterProximoDiaUtil();
+    
+        const horariosOcupados = agendamentos
+            .filter(a => a.projetor === projetorSelecionado && a.data === dataFormatada)
+            .map(a => a.horario);
+    
+        horarios.forEach(horario => {
+            const label = document.createElement("label");
+            label.style.display = "inline-flex";
+            label.style.alignItems = "center";
+            label.style.marginRight = "10px";
+    
+            const checkbox = document.createElement("input");
+            checkbox.type = "checkbox";
+            checkbox.value = horario;
+            checkbox.name = "horario";
+    
+            if (horariosOcupados.includes(horario)) {
+                checkbox.disabled = true;
+                label.classList.add("horario-indisponivel"); // Adiciona classe vermelha
+            } else {
+                label.classList.add("horario-disponivel"); // Adiciona classe verde
+            }
+    
+            label.appendChild(checkbox);
+            label.appendChild(document.createTextNode(horario));
+            horariosContainer.appendChild(label);
+        });
     }
 
     async function atualizarListaAgendamentos() {
@@ -65,39 +111,51 @@ document.addEventListener("DOMContentLoaded", async () => {
         });
     }
 
-    async function registrarUltimaLimpeza(data) {
-        const configRef = doc(db, "config", "ultimaLimpeza");
-        await setDoc(configRef, { dataLimpeza: data });
-    }
+    if (form) {
+        form.addEventListener("submit", async (e) => {
+            e.preventDefault();
+            const professor = document.getElementById("professor").value;
+            const projetor = projetorSelect.value;
+            const horariosSelecionados = Array.from(document.querySelectorAll("input[name='horario']:checked"))
+                .map(cb => cb.value);
+            const dataFormatada = obterProximoDiaUtil();
 
-    async function obterUltimaLimpeza() {
-        const configRef = doc(db, "config", "ultimaLimpeza");
-        const docSnap = await getDoc(configRef);
-        if (docSnap.exists()) {
-            return docSnap.data().dataLimpeza;
-        } else {
-            return null;
-        }
+            if (!professor || !projetor || horariosSelecionados.length === 0) return;
+
+            for (let horario of horariosSelecionados) {
+                await addDoc(collection(db, "agendamentos"), { professor, projetor, horario, data: dataFormatada });
+            }
+            atualizarHorariosDisponiveis();
+            atualizarListaAgendamentos();
+            form.reset();
+        });
+
+        projetorSelect.addEventListener("change", atualizarHorariosDisponiveis);
+        atualizarHorariosDisponiveis();
     }
+    atualizarListaAgendamentos();
+
 
     async function limparAgendamentosDiarios() {
         const agora = new Date();
-        const dataAtual = agora.toISOString().split('T')[0];
-        
-        const ultimaLimpeza = await obterUltimaLimpeza();
-        
-        if (agora.getHours() >= 17 && ultimaLimpeza !== dataAtual) {
+        const dataAtual = agora.toISOString().split('T')[0]; // Obtém a data no formato "YYYY-MM-DD"
+        const ultimaLimpeza = localStorage.getItem("ultimaLimpeza");
+    
+        if (agora.getHours() === 17 && ultimaLimpeza !== dataAtual) {  
+            // Se ainda não foi feita hoje, apaga os agendamentos
             const querySnapshot = await getDocs(collection(db, "agendamentos"));
             querySnapshot.forEach(async (docSnap) => {
                 await deleteDoc(doc(db, "agendamentos", docSnap.id));
             });
-
-            await registrarUltimaLimpeza(dataAtual);
+    
             atualizarListaAgendamentos();
+            localStorage.setItem("ultimaLimpeza", dataAtual); // Registra a última limpeza
         }
     }
-
+    
+    // Verifica a cada 1 minuto
     setInterval(limparAgendamentosDiarios, 60000);
-
-    atualizarListaAgendamentos();
+    
+    
 });
+
