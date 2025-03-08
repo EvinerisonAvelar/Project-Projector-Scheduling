@@ -109,23 +109,62 @@ document.addEventListener("DOMContentLoaded", async () => {
     async function atualizarListaAgendamentos() {
         if (!tabelaAgendamentos) return;
         tabelaAgendamentos.innerHTML = "<tr><th>Professor</th><th>Projetor</th><th>Horários</th><th>Data</th></tr>";
-        const agendamentos = await carregarAgendamentos();
         
+        const agendamentos = await carregarAgendamentos();
+        const hoje = new Date().toISOString().split('T')[0]; // Obtém a data de hoje
+    
+        const agendamentosAtivos = agendamentos.filter(a => a.data >= hoje); // Filtra apenas os agendamentos futuros ou de hoje
+    
         const agendamentosAgrupados = {};
-        agendamentos.forEach(a => {
+        agendamentosAtivos.forEach(a => {
             const chave = `${a.professor}-${a.projetor}-${a.data}`;
             if (!agendamentosAgrupados[chave]) {
                 agendamentosAgrupados[chave] = { professor: a.professor, projetor: a.projetor, horarios: [], data: a.data };
             }
             agendamentosAgrupados[chave].horarios.push(a.horario);
         });
-        
+    
         Object.values(agendamentosAgrupados).forEach(a => {
             const tr = document.createElement("tr");
             tr.innerHTML = `<td>${a.professor}</td><td>${a.projetor}</td><td>${a.horarios.sort().join(", ")}</td><td>${a.data}</td>`;
             tabelaAgendamentos.appendChild(tr);
         });
     }
+
+    async function atualizarHistoricoAgendamentos() {
+        const tabelaHistorico = document.getElementById("tabela-historico");
+        if (!tabelaHistorico) return;
+        tabelaHistorico.innerHTML = "<tr><th>Professor</th><th>Projetor</th><th>Horários</th><th>Data</th></tr>";
+        
+        const agendamentos = await carregarAgendamentos();
+        
+        const hoje = new Date();
+        const semanaPassada = new Date(hoje);
+        semanaPassada.setDate(hoje.getDate() - 7); // Pega registros dos últimos 7 dias
+        
+        const agendamentosSemana = agendamentos.filter(a => {
+            const dataAgendamento = new Date(a.data);
+            return dataAgendamento >= semanaPassada && dataAgendamento <= hoje;
+        });
+    
+        const agendamentosAgrupados = {};
+        agendamentosSemana.forEach(a => {
+            const chave = `${a.professor}-${a.projetor}-${a.data}`;
+            if (!agendamentosAgrupados[chave]) {
+                agendamentosAgrupados[chave] = { professor: a.professor, projetor: a.projetor, horarios: [], data: a.data };
+            }
+            agendamentosAgrupados[chave].horarios.push(a.horario);
+        });
+    
+        Object.values(agendamentosAgrupados).forEach(a => {
+            const tr = document.createElement("tr");
+            tr.innerHTML = `<td>${a.professor}</td><td>${a.projetor}</td><td>${a.horarios.sort().join(", ")}</td><td>${a.data}</td>`;
+            tabelaHistorico.appendChild(tr);
+        });
+    }
+    
+    // Chamar a função ao carregar a página de histórico
+    document.addEventListener("DOMContentLoaded", atualizarHistoricoAgendamentos);
 
     if (form) {
         form.addEventListener("submit", async (e) => {
