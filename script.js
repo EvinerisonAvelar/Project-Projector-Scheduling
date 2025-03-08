@@ -1,8 +1,4 @@
 // script.js
-<<<<<<< HEAD
-=======
-
->>>>>>> parent of 5a12971 (update 28.02)
 // Importar e configurar Firebase
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.3.1/firebase-app.js";
 import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.3.1/firebase-analytics.js";
@@ -32,12 +28,12 @@ document.addEventListener("DOMContentLoaded", async () => {
         let hoje = new Date();
         let diaAgendamento = new Date(hoje);
         
-<<<<<<< HEAD
+
         if (hoje.getHours() >= 17) {
             diaAgendamento.setDate(hoje.getDate() + 1);
         }
         
-=======
+
         // Verifica se já houve a limpeza (ou seja, se passou das 17h) **MAS** mantém o mesmo dia se ainda for possível agendar
         const ultimaLimpeza = localStorage.getItem("ultimaLimpeza");
         const dataHojeFormatada = hoje.toISOString().split('T')[0];
@@ -47,7 +43,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         }
     
         // Se for sábado (6) ou domingo (0), avança para segunda-feira
->>>>>>> parent of 5a12971 (update 28.02)
+
         while (diaAgendamento.getDay() === 6 || diaAgendamento.getDay() === 0) {
             diaAgendamento.setDate(diaAgendamento.getDate() + 1);
         }
@@ -97,12 +93,11 @@ document.addEventListener("DOMContentLoaded", async () => {
             checkbox.name = "horario";
             if (horariosOcupados.includes(horario)) {
                 checkbox.disabled = true;
-<<<<<<< HEAD
-=======
+
                 label.classList.add("horario-indisponivel"); // Adiciona classe vermelha
             } else {
                 label.classList.add("horario-disponivel"); // Adiciona classe verde
->>>>>>> parent of 5a12971 (update 28.02)
+
             }
             
             label.appendChild(checkbox);
@@ -159,31 +154,29 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     async function limparAgendamentosDiarios() {
         const agora = new Date();
-<<<<<<< HEAD
+
         if (agora.getHours() >= 17) {
-=======
-        const dataAtual = agora.toISOString().split('T')[0]; // Obtém a data no formato "YYYY-MM-DD"
-        const ultimaLimpeza = localStorage.getItem("ultimaLimpeza");
-    
-        if (agora.getHours() === 17 && ultimaLimpeza !== dataAtual) {  
-            // Se ainda não foi feita hoje, apaga os agendamentos
->>>>>>> parent of 5a12971 (update 28.02)
-            const querySnapshot = await getDocs(collection(db, "agendamentos"));
-            querySnapshot.forEach(async (docSnap) => {
-                await deleteDoc(doc(db, "agendamentos", docSnap.id));
-            });
-<<<<<<< HEAD
-=======
-    
->>>>>>> parent of 5a12971 (update 28.02)
-            atualizarListaAgendamentos();
-            localStorage.setItem("ultimaLimpeza", dataAtual); // Registra a última limpeza
+            const dataAtual = agora.toISOString().split('T')[0]; // Obtém a data no formato "YYYY-MM-DD"
+            const ultimaLimpeza = localStorage.getItem("ultimaLimpeza");
+
+            if (agora.getHours() === 17 && ultimaLimpeza !== dataAtual) {  
+                // Se ainda não foi feita hoje, apaga os agendamentos
+                const querySnapshot = await getDocs(collection(db, "agendamentos"));
+                querySnapshot.forEach(async (docSnap) => {
+                    await deleteDoc(doc(db, "agendamentos", docSnap.id));
+                });
+
+                atualizarListaAgendamentos();
+                localStorage.setItem("ultimaLimpeza", dataAtual); // Registra a última limpeza
+            }
         }
     }
-    
+
+    // Chama a função imediatamente para garantir que a limpeza seja feita quando necessário
+    limparAgendamentosDiarios();
+
     // Verifica a cada 1 minuto
     setInterval(limparAgendamentosDiarios, 60000);
-    
-    
+
 });
 
