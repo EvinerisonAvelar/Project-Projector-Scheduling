@@ -4,6 +4,7 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/11.3.1/firebas
 import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.3.1/firebase-analytics.js";
 import { getFirestore, collection, addDoc, getDocs, query, where, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/11.3.1/firebase-firestore.js";
 
+
 const firebaseConfig = {
     apiKey: "AIzaSyAuz7p8hwBYbYwe-W2xw6s1m80ToA93Lx4",
     authDomain: "projeto-agendamento-projetor.firebaseapp.com",
@@ -216,6 +217,8 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     // Verifica a cada 1 minuto
     setInterval(limparAgendamentosDiarios, 60000);
+
+
 
 });
 
