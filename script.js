@@ -109,7 +109,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     async function atualizarListaAgendamentos() {
         if (!tabelaAgendamentos) return;
-        tabelaAgendamentos.innerHTML = "<tr><th>Professor</th><th>Projetor</th><th>Horários</th><th>Data</th></tr>";
+        tabelaAgendamentos.innerHTML = "<tr><th>Professor</th><th>Item Agendado</th><th>Horários</th><th>Data</th></tr>";
         
         const agendamentos = await carregarAgendamentos();
         const hoje = new Date().toISOString().split('T')[0]; // Obtém a data de hoje
@@ -135,7 +135,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     async function atualizarHistoricoAgendamentos() {
         const tabelaHistorico = document.getElementById("tabela-historico");
         if (!tabelaHistorico) return;
-        tabelaHistorico.innerHTML = "<tr><th>Professor</th><th>Projetor</th><th>Horários</th><th>Data</th></tr>";
+        tabelaHistorico.innerHTML = "<tr><th>Professor</th><th>Item Agendado</th><th>Horários</th><th>Data</th></tr>";
         
         const agendamentos = await carregarAgendamentos();
         
