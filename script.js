@@ -1,14 +1,11 @@
 // script.js
 // Importar e configurar Firebase
-  // Import the functions you need from the SDKs you need
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/11.5.0/firebase-app.js";
-  import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.5.0/firebase-analytics.js";
-  // TODO: Add SDKs for Firebase products that you want to use
-  // https://firebase.google.com/docs/web/setup#available-libraries
+import { initializeApp } from "https://www.gstatic.com/firebasejs/11.3.1/firebase-app.js";
+import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.3.1/firebase-analytics.js";
+import { getFirestore, collection, addDoc, getDocs, query, where, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/11.3.1/firebase-firestore.js";
 
-  // Your web app's Firebase configuration
-  // For Firebase JS SDK v7.20.0 and later, measurementId is optional
-  const firebaseConfig = {
+
+const firebaseConfig = {
     apiKey: "AIzaSyAuz7p8hwBYbYwe-W2xw6s1m80ToA93Lx4",
     authDomain: "projeto-agendamento-projetor.firebaseapp.com",
     projectId: "projeto-agendamento-projetor",
@@ -16,12 +13,11 @@
     messagingSenderId: "388443857631",
     appId: "1:388443857631:web:b3a11057f365d27058bf6a",
     measurementId: "G-KCYMLTJW7K"
-  };
+};
 
-  // Initialize Firebase
-  const app = initializeApp(firebaseConfig);
-  const analytics = getAnalytics(app);
-  const db = getFirestore(app);
+const app = initializeApp(firebaseConfig);
+const analytics = getAnalytics(app);
+const db = getFirestore(app);
 
 document.addEventListener("DOMContentLoaded", async () => {
     const form = document.getElementById("agendamento-form");
@@ -113,7 +109,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     async function atualizarListaAgendamentos() {
         if (!tabelaAgendamentos) return;
-        tabelaAgendamentos.innerHTML = "<tr><th>Professor</th><th>Projetor</th><th>Horários</th><th>Data</th></tr>";
+        tabelaAgendamentos.innerHTML = "<tr><th>Professor</th><th>Item Agendado</th><th>Horários</th><th>Data</th></tr>";
         
         const agendamentos = await carregarAgendamentos();
         const hoje = new Date().toISOString().split('T')[0]; // Obtém a data de hoje
@@ -139,7 +135,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     async function atualizarHistoricoAgendamentos() {
         const tabelaHistorico = document.getElementById("tabela-historico");
         if (!tabelaHistorico) return;
-        tabelaHistorico.innerHTML = "<tr><th>Professor</th><th>Projetor</th><th>Horários</th><th>Data</th></tr>";
+        tabelaHistorico.innerHTML = "<tr><th>Professor</th><th>Item Agendado</th><th>Horários</th><th>Data</th></tr>";
         
         const agendamentos = await carregarAgendamentos();
         
