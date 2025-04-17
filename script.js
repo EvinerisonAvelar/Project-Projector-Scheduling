@@ -109,7 +109,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     async function atualizarListaAgendamentos() {
         if (!tabelaAgendamentos) return;
-        tabelaAgendamentos.innerHTML = "<tr><th>Professor</th><th>Item Agendado</th><th>Horários</th><th>Data</th></tr>";
+        tabelaAgendamentos.innerHTML = "<tr><th>Professor</th><th>Item Agendado</th><th>Horários</th></tr>";  // <th>Data</th> - Remove o nome DATA da tabela (Tela de agendamentos)
         
         const agendamentos = await carregarAgendamentos();
         const hoje = new Date().toISOString().split('T')[0]; // Obtém a data de hoje
@@ -127,15 +127,15 @@ document.addEventListener("DOMContentLoaded", async () => {
     
         Object.values(agendamentosAgrupados).forEach(a => {
             const tr = document.createElement("tr");
-            tr.innerHTML = `<td>${a.professor}</td><td>${a.projetor}</td><td>${a.horarios.sort().join(", ")}</td><td>${a.data}</td>`;
+            tr.innerHTML = `<td>${a.professor}</td><td>${a.projetor}</td><td>${a.horarios.sort().join(", ")}</td>`;  // <td>${a.data}</td> - Remove a coluna por completo da tabela (Tela de agendamentos)
             tabelaAgendamentos.appendChild(tr);
         });
     }
 
     async function atualizarHistoricoAgendamentos() {
         const tabelaHistorico = document.getElementById("tabela-historico");
-        if (!tabelaHistorico) return;
-        tabelaHistorico.innerHTML = "<tr><th>Professor</th><th>Item Agendado</th><th>Horários</th><th>Data</th></tr>";
+        if (!tabelaHistorico) return; 
+        tabelaHistorico.innerHTML = "<tr><th>Professor</th><th>Item Agendado</th><th>Horários</th><th>Data</th></tr>";  //
         
         const agendamentos = await carregarAgendamentos();
         
