@@ -13,6 +13,8 @@ body {
     padding-bottom: 20px; /* Adicionado para mais espaço na parte inferior */
 }
 
+
+
 .container {
     width: 400px;
     padding: 20px;
@@ -88,6 +90,25 @@ button:hover {
         flex-direction: column;
         align-items: center;
     }
+
+
+    .cabecalho{
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+        height: 70px;
+
+    }
+
+
+    
+    .h1-texto{
+        padding-top: 30px;
+    }
+    html, body {
+        overflow-x: hidden;
+    }
 }
 
 table {
@@ -119,6 +140,9 @@ th {
     th, td {
         padding: 8px;
     }
+
+
+
 }
 
 /* Remover o estilo padrão do iOS para select */
@@ -222,3 +246,54 @@ select:focus {
 
 
 
+
+
+header{
+    top: 0;
+    display: flex;
+    flex-direction: row;
+    background-color: #d4d3d3cd;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: auto;
+
+   
+}
+.cabecalho{
+    padding-bottom: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+
+}
+
+
+.tech img{
+    width: 100px;
+}
+.newton img{
+    width: 90px;
+    padding-top: 10px;
+}
+
+.iema img{
+    width: 150px;
+}
+
+.h1-texto{
+    padding-top: 150px;
+
+}
+
+footer{
+    text-align: center;
+    padding: 30px 30px 30px 30px;
+    font-family: 'Times New Roman', Times, serif;
+    color: #111010;
+
+    p{
+        max-width: 800px;
+    }
+}
